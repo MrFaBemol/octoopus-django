@@ -1,0 +1,9 @@
+
+/************ Columns *************/
+.columns{display: grid;}
+.c50-50{grid-template-columns: 50% 50%;}
+/* more left */
+.c25-75{grid-template-columns: 25% 75%;}
+.c15-85{grid-template-columns: 15% 85%;}
+/* more right */
+.c75-25{grid-template-columns: 75% 25%;}

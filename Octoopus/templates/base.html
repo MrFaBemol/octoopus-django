@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="icon" href="{% static 'images/favicon.ico' %}"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat&family=Open+Sans&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/layouts.css' %}" />
+        {% block css %}{% endblock %}
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        {% block javascript %}{% endblock %}
+        <title>
+            Octoopus - {% block title %}{% endblock %}
+        </title>
+    </head>
+    <body>
+        <header>
+            <c-logo>
+                 <img src="{% static 'images/pieuvre.png' %}" alt="Octoo" />
+                 <a href="{% url 'index' %}">
+                    OCTO<span class="opus">OPUS</span>
+                </a>
+            </c-logo>
+            <c-navigation>
+                <ul>
+                    <li><a href="{% url 'what-index' %}">What?</a></li>
+                    <li>When?</li>
+                    <li>Where?</li>
+                    <li>Who?</li>
+                    <li>|</li>
+                    <li><a href="#" class="highlight">Sign in</a></li>
+                </ul>
+            </c-navigation>
+        </header>
+
+        <!--
+        <c-path>
+            Lol
+        </c-path>
+        -->
+
+        <main>
+            {% block main %} {% endblock %}
+        </main>
+
+        <footer class="columns c50-50">
+            <c-footer-left>
+                <c-logo>
+                    <img src="{% static 'images/pieuvre.png' %}" alt="Octoo" />
+                    <logotext>OCTO<span class="opus">OPUS</span></logotext>
+                </c-logo>
+                Copyright ©2021 All rights reserved
+            </c-footer-left>
+            <c-footer-right class="columns c50-50">
+                <c-about>
+                    <span class="footer_title">About</span>
+                    <ul>
+                        <li>FAQ</li>
+                        <li>Contact</li>
+                    </ul>
+                </c-about>
+                <c-tools>
+                    <span class="footer_title">Tools</span>
+                    <ul>
+                        <li>What</li>
+                        <li>When</li>
+                        <li>Where</li>
+                        <li>Who</li>
+                    </ul>
+                </c-tools>
+            </c-footer-right>
+
+        </footer>
+
+    </body>
+</html>

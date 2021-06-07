@@ -1,0 +1,24 @@
+{% extends "what-base.html" %}
+
+{% block title %}
+    Browse composers
+{% endblock %}
+
+
+{% block main %}
+<div class="columns c15-85">
+    <div>a</div>
+    <div>
+        <c-composer-grid>
+            {% for composer in composers %}
+                <c-composer style="background-image:url('{{composer.portrait}}');">
+                    <c-composer-infos>
+                        <div class="name">{{composer.name}}, {{composer.first_name}}</div>
+                        <div class="infos">#{{composer.id}} - {{composer.works_qty}} works</div>
+                    </c-composer-infos>
+                </c-composer>
+            {% endfor %}
+        </c-composer-grid>
+    </div>
+</div>
+{% endblock %}

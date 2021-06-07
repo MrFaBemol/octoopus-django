@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create mass work version</title>
+    <style>
+        td {
+            padding-left:10px;
+            padding-right:10px;
+        }
+        tr:hover {background: #EEE}
+    </style>
+</head>
+<body>
+
+    <!-- SEARCH -->
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Va chercher">
+    </form>
+
+    <!-- SEND -->
+    {% if works %}
+
+        <form method="POST">
+            <input type="hidden" name="send" value="True">
+            {% csrf_token %}
+
+            <h1>Instruments à ajouter :</h1>
+            {% for i in instruments_qty %}
+                Instrument # {{ i }}
+                <select name="instrument_{{i}}">
+                    {% for i in instruments %}
+                        <option value="{{i.id}}" {% if not i.id %}selected{% endif %}>{{i.name}}</option>
+                    {% endfor %}
+                </select><br />
+            {% endfor %}
+
+
+
+            <h1>{{ works_qty }} oeuvres trouvées :</h1>
+            <table>
+                {% for work in works %}
+                    <tr {% if work in saved_works %} style="color: green" {% endif %}>
+                        <td><input type="checkbox" name="work_id_{{work.id}}" {% if work not in saved_works %} checked{% endif %}></td>
+                        <td> {{work.id}}</td>
+                        <td> <b>{{work.name}} </b></td>
+                        <td> {{work.composer_id.name}}</td>
+                    </tr>
+                {% endfor %}
+
+
+                <tr>
+                    <td colspan="4">
+                        <input type="submit" value="Accepter">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    {% endif %}
+
+</body>
+</html>

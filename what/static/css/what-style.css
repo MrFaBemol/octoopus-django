@@ -1,0 +1,48 @@
+
+main{
+    padding: 10px;
+}
+
+c-composer-grid{
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+}
+
+c-composer {
+    display: flex;
+    align-items: flex-end;
+    min-height: 200px;
+    border-radius: 8px;
+    background-size: cover;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
+    transition: box-shadow 0.4s;
+    transition-timing-function: ease;
+}
+
+c-composer-infos {
+    flex: 1;
+
+    display: grid;
+    grid-template-rows: 40px 40px;
+
+    background: rgba(0, 0, 0, 0.7);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    color: white;
+    cursor: auto;
+
+    height: 40px;
+    transition: height 0.4s;
+    transition-timing-function: ease;
+}
+
+c-composer:hover{box-shadow: 0 8px 16px 0 rgba(0,0,0,0.8);}
+c-composer:hover c-composer-infos{ height: 80px;}
+
+
+c-composer-infos div.name{display:grid; place-items:center; height: 40px; font-family: 'Lato'}
+c-composer-infos div.infos{display:grid; place-items:center; height: 40px;}
