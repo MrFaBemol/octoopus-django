@@ -5,8 +5,8 @@ main{
 
 c-composer-grid{
     display: grid;
-    grid-gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+    grid-gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
 }
 
 c-composer {
@@ -40,7 +40,7 @@ c-composer-infos {
     transition-timing-function: ease;
 }
 
-c-composer:hover{box-shadow: 0 8px 16px 0 rgba(0,0,0,0.8);}
+c-composer:hover{box-shadow: 0 4px 16px 4px rgba(0,0,0,0.8);}
 c-composer:hover c-composer-infos{ height: 80px;}
 
 

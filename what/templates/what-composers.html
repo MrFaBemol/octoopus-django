@@ -1,5 +1,6 @@
 {% extends "what-base.html" %}
 
+
 {% block title %}
     Browse composers
 {% endblock %}
@@ -10,15 +11,47 @@
     <div>a</div>
     <div>
         <c-composer-grid>
-            {% for composer in composers %}
-                <c-composer style="background-image:url('{{composer.portrait}}');">
-                    <c-composer-infos>
-                        <div class="name">{{composer.name}}, {{composer.first_name}}</div>
-                        <div class="infos">#{{composer.id}} - {{composer.works_qty}} works</div>
-                    </c-composer-infos>
-                </c-composer>
-            {% endfor %}
+
         </c-composer-grid>
     </div>
 </div>
+{% endblock %}
+
+<!--
+<c-composer style="background-image:url('{{composer.portrait}}');">
+    <c-composer-infos>
+        <div class="name">{{composer.name}}, {{composer.first_name}}</div>
+        <div class="infos">#{{composer.id}} - {{composer.works_qty}} works</div>
+    </c-composer-infos>
+</c-composer>
+                -->
+
+{% block javascript %}
+    {% csrf_token %}
+    <script type="text/javascript">
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        $(document).ready(function() {
+           $.ajax({
+                url: "{% url 'api-composers' %}",
+                headers: {'X-CSRFToken': csrftoken},
+                type: "POST",
+                dataType: "json",
+                success: function(data){
+                    console.log(data);
+                    for (var i = 0; i < data.count ; i++){
+                        $("c-composer-grid").append(`
+                            <c-composer style="background-image:url('`+ data.data[i].portrait +`');">
+                                <c-composer-infos>
+                                    <div class="name">`+ data.data[i].name +`, `+ data.data[i].first_name +`</div>
+                                    <div class="infos">#`+ data.data[i].id +` - `+ data.data[i].works_count +` works</div>
+                                </c-composer-infos>
+                            </c-composer>
+                        `);
+                    }
+
+
+               }
+           });
+        });
+    </script>
 {% endblock %}

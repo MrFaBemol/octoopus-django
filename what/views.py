@@ -12,7 +12,6 @@ from what.forms import SearchForm
 
 
 def index(request):
-    print("A".split(" "))
     return render(request, "what-index.html")
 
 
@@ -161,7 +160,7 @@ def browse(request):
 def browse_composers(request):
     all_composers = Composer.objects.annotate(works_qty=Count('work')).order_by('-is_popular')
     # print(all_composers)
-    return render(request, "what-composers.html", context={'composers': all_composers})
+    return render(request, "what-composers.html")
 
 
 # Browse  works     ('/what/works/')
