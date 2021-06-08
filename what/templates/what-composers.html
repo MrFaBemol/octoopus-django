@@ -10,9 +10,13 @@
 <div class="columns c15-85">
     <div>a</div>
     <div>
-        <c-composer-grid>
-
-        </c-composer-grid>
+        <div class="pagination">
+            <a href="#"  class="prev_page"><</a>
+            Page: <span class="current_page">0</span> / <span class="total_page">0</span>
+            <a href="#" class="next_page">></a>
+            (<span class="results_count">0</span> results)
+        </div>
+        <c-composer-grid class="disabled"> </c-composer-grid>
     </div>
 </div>
 {% endblock %}
@@ -30,16 +34,48 @@
     {% csrf_token %}
     <script type="text/javascript">
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        $(document).ready(function() {
-           $.ajax({
+        const result_per_page = 30;
+
+        // The function to call api
+        function load_composers(page = 1){
+            // console.log(page);
+            let composer_grid = $('c-composer-grid');
+            let prev_page = $('.prev_page');
+            let next_page = $('.next_page');
+            composer_grid.addClass('disabled');
+            next_page.addClass('disabled');
+
+            $.ajax({
                 url: "{% url 'api-composers' %}",
                 headers: {'X-CSRFToken': csrftoken},
                 type: "POST",
+
                 dataType: "json",
+                data: {
+                    'page': page
+                },
+
                 success: function(data){
                     console.log(data);
-                    for (var i = 0; i < data.count ; i++){
-                        $("c-composer-grid").append(`
+
+
+                    let page_max = data.total_count % result_per_page > 0 ?
+                                    (data.total_count/result_per_page + 1).toFixed(0) :
+                                    (data.total_count/result_per_page);
+
+                    $('.results_count').text(data.total_count);
+                    $('.current_page').text(page);
+                    $('.total_page').text(page_max);
+
+                    prev_page.off('click');
+                    prev_page.click(function(){load_composers(page - 1 > 0 ? page - 1 : 1)});
+                    next_page.off('click');
+                    next_page.click(function(){load_composers(page + 1 < page_max ? page + 1 : page_max);});
+
+                    composer_grid.empty();
+
+                    for (let i = 0; i < data.page_count ; i++){
+                        composer_grid.append(`
                             <c-composer style="background-image:url('`+ data.data[i].portrait +`');">
                                 <c-composer-infos>
                                     <div class="name">`+ data.data[i].name +`, `+ data.data[i].first_name +`</div>
@@ -49,9 +85,16 @@
                         `);
                     }
 
-
                }
            });
+
+            composer_grid.removeClass('disabled');
+            next_page.removeClass('disabled');
+            prev_page.removeClass('disabled');
+        }
+
+        $(document).ready(function() {
+           load_composers();
         });
     </script>
 {% endblock %}

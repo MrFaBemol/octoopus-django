@@ -3,6 +3,11 @@ main{
     padding: 10px;
 }
 
+.pagination{
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
 c-composer-grid{
     display: grid;
     grid-gap: 2rem;
@@ -19,7 +24,7 @@ c-composer {
     cursor: pointer;
 
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
-    transition: box-shadow 0.4s;
+    transition: box-shadow 0.3s;
     transition-timing-function: ease;
 }
 
@@ -36,7 +41,7 @@ c-composer-infos {
     cursor: auto;
 
     height: 40px;
-    transition: height 0.4s;
+    transition: height 0.3s;
     transition-timing-function: ease;
 }
 
