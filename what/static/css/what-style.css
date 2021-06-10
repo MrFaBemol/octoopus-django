@@ -1,17 +1,19 @@
 
-main{
-    padding: 10px;
+
+c-top-bar{
 }
 
-.pagination{
-    margin-bottom: 10px;
+c-pagination{
+    margin: 5px;
     font-size: 1.2rem;
+
 }
 
 c-composer-grid{
     display: grid;
     grid-gap: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+    justify-content: center;
 }
 
 c-composer {

@@ -8,41 +8,56 @@
 
 {% block main %}
 <div class="columns c15-85">
-    <div>a</div>
+    <c-filters>
+        <input type="text" name="name" id="name" style="width:100%;">
+    </c-filters>
     <div>
-        <div class="pagination">
-            <a href="#"  class="prev_page"><</a>
-            Page: <span class="current_page">0</span> / <span class="total_page">0</span>
-            <a href="#" class="next_page">></a>
-            (<span class="results_count">0</span> results)
-        </div>
+        <c-top-bar>
+            <c-order-by>
+                <select name="order_by" id="order_by">
+                    <option value="default" selected>Default (popular first)</option>
+                    <option value="name">Name</option>
+                    <option value="works_quantity">Works quantity</option>
+                    <option value="birth">Birth date</option>
+                    <option value="death">Death date</option>
+                </select>
+                <select name="ordering" id="ordering">
+                    <option value="ascending" selected>Ascending</option>
+                    <option value="descending">Descending</option>
+                </select>
+            </c-order-by>
+            <c-pagination>
+                (<span class="results_count">0</span> results)
+                <a href="#"  class="prev_page"><</a>
+                Page: <span class="current_page">0</span> / <span class="total_page">0</span>
+                <a href="#" class="next_page">></a>
+            </c-pagination>
+        </c-top-bar>
+
         <c-composer-grid class="disabled"> </c-composer-grid>
     </div>
 </div>
 {% endblock %}
 
-<!--
-<c-composer style="background-image:url('{{composer.portrait}}');">
-    <c-composer-infos>
-        <div class="name">{{composer.name}}, {{composer.first_name}}</div>
-        <div class="infos">#{{composer.id}} - {{composer.works_qty}} works</div>
-    </c-composer-infos>
-</c-composer>
-                -->
+
 
 {% block javascript %}
     {% csrf_token %}
     <script type="text/javascript">
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const result_per_page = 30;
+        let counter = 0;
 
         // The function to call api
         function load_composers(page = 1){
+            counter++;
+            console.log(counter);
             // console.log(page);
             let composer_grid = $('c-composer-grid');
             let prev_page = $('.prev_page');
             let next_page = $('.next_page');
             composer_grid.addClass('disabled');
+            prev_page.addClass('disabled');
             next_page.addClass('disabled');
 
             $.ajax({
@@ -52,13 +67,14 @@
 
                 dataType: "json",
                 data: {
-                    'page': page
+                    'page': page,
+                    'name': $('#name').val(),
+                    'order_by': $('#order_by').val(),
+                    'ordering': $('#ordering').val(),
                 },
 
                 success: function(data){
-                    console.log(data);
-
-
+                    //console.log(data);
                     let page_max = data.total_count % result_per_page > 0 ?
                                     (data.total_count/result_per_page + 1).toFixed(0) :
                                     (data.total_count/result_per_page);
@@ -79,7 +95,7 @@
                             <c-composer style="background-image:url('`+ data.data[i].portrait +`');">
                                 <c-composer-infos>
                                     <div class="name">`+ data.data[i].name +`, `+ data.data[i].first_name +`</div>
-                                    <div class="infos">#`+ data.data[i].id +` - `+ data.data[i].works_count +` works</div>
+                                    <div class="infos">#`+ data.data[i].id +` - `+ data.data[i].works_quantity +` works</div>
                                 </c-composer-infos>
                             </c-composer>
                         `);
@@ -94,7 +110,22 @@
         }
 
         $(document).ready(function() {
-           load_composers();
+            load_composers();
+
+            // Trigger a reload each time something is changed
+            const on_changes = ['order_by', 'ordering'];
+            for (let on_change of on_changes){
+                $('#'+on_change).change(function (){
+                    load_composers();
+                });
+            }
+            $('#name').keyup(function (){
+                load_composers();
+            });
         });
+
+
+
+
     </script>
 {% endblock %}
