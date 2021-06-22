@@ -1,0 +1,174 @@
+
+
+c-filters{
+    padding: 10px;
+    min-width: auto;
+
+    & div.input-min-max{
+        display: grid;
+        grid-template-columns: 40% auto auto;
+        grid-gap: 5px;
+        margin-bottom: 5px;
+        align-items: center;
+        & input{
+            padding: 1px 10px;
+            height: 35px;
+        }
+
+    }
+}
+
+
+
+c-top-bar, c-bottom-bar{
+    padding: 10px;
+    font-size: 1.1rem;
+}
+ c-bottom-bar{
+     width: 100%;
+ }
+c-results{
+    display: flex;
+    align-items: center;
+    width:250px;
+
+    & span:is(.results_min_page, .results_max_page){
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
+c-order-by{
+    font-size: 1rem;
+    & span.label{font-size: 1.2rem;}
+}
+c-pagination{
+    display: flex;
+    align-items: center;
+
+    & span:is(.results_count, .current_page, .total_page), & a:is(.prev_page, .next_page){
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    & a:is(.prev_page, .next_page){ cursor: pointer; text-decoration: none;}
+}
+
+c-composer-grid{
+    display: grid;
+    grid-gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+    justify-content: center;
+}
+
+c-composer {
+    display: grid;
+    grid-template-rows: 1fr auto;
+
+    min-height: 200px;
+    border-radius: 8px;
+    background-size: cover;
+    overflow: hidden;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
+    transition: box-shadow 0.3s;
+    transition-timing-function: ease;
+
+    &:hover{
+        box-shadow: 0 4px 16px 4px rgba(0,0,0,0.8);
+
+        & c-composer-infos{
+            height: 80px;
+        }
+    }
+
+    & c-composer-link{
+        background-color: transparent;
+    }
+}
+
+c-composer-infos {
+    flex: 1;
+
+    display: grid;
+    grid-template-rows: 40px 40px;
+
+    background: rgba(0, 0, 0, 0.7);
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    color: white;
+    cursor: auto;
+
+    height: 40px;
+    transition: height 0.3s;
+    transition-timing-function: ease;
+
+    & div.name{
+        display:grid;
+        place-items:center;
+        height: 40px;
+        font-family: 'Lato';
+    }
+    & div.infos{
+        display:grid;
+        place-items:center;
+        height: 40px;
+    }
+}
+
+
+
+// Details ----------------------------
+.composer-infos{
+    text-align: justify;
+    padding: 1rem 20%;
+
+
+    & h1{
+        font-family: 'Lato', sans-serif;
+        color: var(--color-dark-blue);
+    }
+    & .portrait{
+        float: right;
+        margin: 0px 40px;
+        & img{
+            border-radius: 8px;
+        }
+    }
+
+    .biography{
+        color: var(--color-medium-grey);
+
+        & .head {
+
+        }
+        & .all{
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
+        }
+        & .all.open {
+            opacity: 1;
+            max-height: 2000px;
+
+        }
+        & .more{
+            font-weight: bold;
+            font-style: italic;
+            color: var(--color-dark-blue);
+        }
+    }
+
+
+    .testh{
+        max-height: 0;
+        background-color: red;
+        transition: max-height 0.3s ease;
+        overflow: hidden;
+        &.testc{
+            max-height: 80px;
+        }
+    }
+
+}

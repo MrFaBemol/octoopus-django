@@ -1,55 +1,153 @@
-
-
-c-top-bar{
+c-filters {
+  padding: 10px;
+  min-width: auto;
+}
+c-filters div.input-min-max {
+  display: grid;
+  grid-template-columns: 40% auto auto;
+  grid-gap: 5px;
+  margin-bottom: 5px;
+  align-items: center;
+}
+c-filters div.input-min-max input {
+  padding: 1px 10px;
+  height: 35px;
 }
 
-c-pagination{
-    margin: 5px;
-    font-size: 1.2rem;
-
+c-top-bar, c-bottom-bar {
+  padding: 10px;
+  font-size: 1.1rem;
 }
 
-c-composer-grid{
-    display: grid;
-    grid-gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
-    justify-content: center;
+c-bottom-bar {
+  width: 100%;
+}
+
+c-results {
+  display: flex;
+  align-items: center;
+  width: 250px;
+}
+c-results span:is(.results_min_page, .results_max_page) {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+c-order-by {
+  font-size: 1rem;
+}
+c-order-by span.label {
+  font-size: 1.2rem;
+}
+
+c-pagination {
+  display: flex;
+  align-items: center;
+}
+c-pagination span:is(.results_count, .current_page, .total_page), c-pagination a:is(.prev_page, .next_page) {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+c-pagination a:is(.prev_page, .next_page) {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+c-composer-grid {
+  display: grid;
+  grid-gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 200px));
+  justify-content: center;
 }
 
 c-composer {
-    display: flex;
-    align-items: flex-end;
-    min-height: 200px;
-    border-radius: 8px;
-    background-size: cover;
-
-    cursor: pointer;
-
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
-    transition: box-shadow 0.3s;
-    transition-timing-function: ease;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 200px;
+  border-radius: 8px;
+  background-size: cover;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.3s;
+  transition-timing-function: ease;
+}
+c-composer:hover {
+  box-shadow: 0 4px 16px 4px rgba(0, 0, 0, 0.8);
+}
+c-composer:hover c-composer-infos {
+  height: 80px;
+}
+c-composer c-composer-link {
+  background-color: transparent;
 }
 
 c-composer-infos {
-    flex: 1;
-
-    display: grid;
-    grid-template-rows: 40px 40px;
-
-    background: rgba(0, 0, 0, 0.7);
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    color: white;
-    cursor: auto;
-
-    height: 40px;
-    transition: height 0.3s;
-    transition-timing-function: ease;
+  flex: 1;
+  display: grid;
+  grid-template-rows: 40px 40px;
+  background: rgba(0, 0, 0, 0.7);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  color: white;
+  cursor: auto;
+  height: 40px;
+  transition: height 0.3s;
+  transition-timing-function: ease;
+}
+c-composer-infos div.name {
+  display: grid;
+  place-items: center;
+  height: 40px;
+  font-family: "Lato";
+}
+c-composer-infos div.infos {
+  display: grid;
+  place-items: center;
+  height: 40px;
 }
 
-c-composer:hover{box-shadow: 0 4px 16px 4px rgba(0,0,0,0.8);}
-c-composer:hover c-composer-infos{ height: 80px;}
+.composer-infos {
+  text-align: justify;
+  padding: 1rem 20%;
+}
+.composer-infos h1 {
+  font-family: "Lato", sans-serif;
+  color: var(--color-dark-blue);
+}
+.composer-infos .portrait {
+  float: right;
+  margin: 0px 40px;
+}
+.composer-infos .portrait img {
+  border-radius: 8px;
+}
+.composer-infos .biography {
+  color: var(--color-medium-grey);
+}
+.composer-infos .biography .all {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+.composer-infos .biography .all.open {
+  opacity: 1;
+  max-height: 2000px;
+}
+.composer-infos .biography .more {
+  font-weight: bold;
+  font-style: italic;
+  color: var(--color-dark-blue);
+}
+.composer-infos .testh {
+  max-height: 0;
+  background-color: red;
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+.composer-infos .testh.testc {
+  max-height: 80px;
+}
 
-
-c-composer-infos div.name{display:grid; place-items:center; height: 40px; font-family: 'Lato'}
-c-composer-infos div.infos{display:grid; place-items:center; height: 40px;}
+/*# sourceMappingURL=what-style.css.map */

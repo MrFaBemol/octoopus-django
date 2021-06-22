@@ -1,0 +1,62 @@
+
+
+{% extends "what-base.html" %}
+
+{% block title %}
+    {{ composer.name }}, {{ composer.first_name }}
+{% endblock %}
+
+
+{% block main %}
+<a href="{% url 'what-composers' %}"> < Return to composers</a>
+
+    <div class="composer-infos">
+        <div class="portrait">
+            <img src="{{ composer.portrait }}" alt="{{ composer.name }} portrait" class="shadow">
+        </div>
+
+        <h1>{{ composer.first_name }} {{ composer.name }} ({{ composer.birth|date:"Y" }} - {{ composer.death|date:"Y" }})</h1>
+        <div class="biography">
+            <div class="head">
+                {{ composer.biography | linebreaks }}
+            </div>
+            <div class="all"></div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+
+
+
+{% block javascript-end %}
+    <script type="text/javascript">
+
+        function toggleBiography(){
+            let all = $('.biography .all');
+            let link = $('.link.more');
+            if (all.hasClass('open')){
+                all.removeClass('open');
+                link.text('See more');
+            } else {
+                all.addClass('open');
+                link.text('See less');
+            }
+        }
+
+        $(document).ready(function() {
+            let head = $('.biography .head');
+            let all = $('.biography .all');
+
+            head.children().each(function (){
+                if ($(this).is(':first-child') && $(this).text() !== ''){
+                   $(this).append(" <a onClick='toggleBiography();' class='link more'>See more</a> ");
+                } else {
+                    $(this).detach().appendTo(all);
+                }
+            });
+        });
+    </script>
+{% endblock %}

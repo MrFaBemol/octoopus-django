@@ -47,7 +47,9 @@
                         <td><input type="checkbox" name="work_id_{{work.id}}" {% if work not in saved_works %} checked{% endif %}></td>
                         <td> {{work.id}}</td>
                         <td> <b>{{work.name}} </b></td>
-                        <td> {{work.composer_id.name}}</td>
+                        <td> {{work.composer_id.name}} ({{work.composer_id.first_name}})</td>
+                        <td> {{work.catalogue}}</td>
+                        <td> {{work.catalogue_number}}</td>
                     </tr>
                 {% endfor %}
 

@@ -109,7 +109,7 @@ def create_mass_work_version(request):
             print("========================================")
             for work in selected_works:
                 w = Work.objects.get(id=work)
-                print("Save... "+w.name)
+                print("Save... #" + str(work) + " " + w.name)
                 wv = WorkVersion(work_id=w, is_original=True)
                 wv.save()
                 for i_id in selected_instruments:
@@ -157,25 +157,24 @@ def browse(request):
 
 
 # Browse composers  ('/what/composers/')
-def browse_composers(request):
+def composers(request):
     all_composers = Composer.objects.annotate(works_qty=Count('work')).order_by('-is_popular')
     # print(all_composers)
     return render(request, "what-composers.html")
 
+# Display a specific composer's details  ('/what/composers/@ID-name-slugged')
+def composer_details(request, composer_id, slug=""):
+    composer = Composer.objects.get(id=composer_id)
+    return render(request, "what-composer-details.html", context={'composer': composer})
+
 
 # Browse  works     ('/what/works/')
-def browse_works(request):
-    return render(request, "what-browse-works.html")
-
-
-# Display a specific composer's details  ('/what/composers/@ID-name-slugged')
-def browse_composer_details(request, composer_id):
-    return render(request, "what-browse-composer-details.html", context={'composer_id': composer_id})
-
+def works(request):
+    return render(request, "what-works.html")
 
 # Display a specific work's details  ('/what/works/@ID-name-slugged')
-def browse_work_details(request, work_id):
-    return render(request, "what-browse-work-details.html", context={'work_id': work_id})
+def work_details(request, work_id):
+    return render(request, "what-work-details.html", context={'work_id': work_id})
 
 
 

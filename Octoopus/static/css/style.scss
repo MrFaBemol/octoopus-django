@@ -1,0 +1,158 @@
+/*
+
+Pink: FC0254
+Dark blue: 0A193D
+Medium blue: 1C294A
+Light blue: 2b2f72
+Mid-grey: 6a7080
+
+*/
+
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: 'Lato', sans-serif;
+
+    font-size:1rem;
+    line-height: 1.8;
+
+    display: grid;
+    height: 100vh;
+    grid-template-rows: 5rem 1fr auto;
+}
+
+
+
+/************ HEADER *************/
+header{
+    background: var(--color-dark-blue);
+    color: var(--color-white-like);
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+c-logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size:1.6rem;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+
+    & a {
+        color: var(--color-white-like);
+        text-decoration:none;
+        transition: all .3s ease;
+    }
+
+    & img {height: 3rem;}
+    & .opus{color:var(--color-pink);transition: all .3s ease;}
+
+    &:hover a {color:var(--color-pink);}
+    &:hover .opus {color:var(--color-white-like);}
+}
+
+
+/* NAVIGATION */
+header c-navigation{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header c-navigation li {
+    display:inline;
+    list-style-type:none;
+    margin-right: 3rem;
+    font-family: 'Montserrat', sans-serif;
+}
+header c-navigation li a {
+    color: var(--color-white-like);
+    text-decoration:none;
+    transition: all .3s ease;
+
+    &:is(a:hover, a.highlight){
+        color:var(--color-pink)
+    }
+}
+
+
+
+
+/************ PATH *************/
+c-path {
+    background: var(--color-light-blue);
+    color: var(--color-white-like);
+    padding:0.5rem;
+    line-height: 1;
+}
+
+
+
+
+/************ MAIN *************/
+main {
+    background: var(--color-white-like);
+
+    & section{
+        padding: 4rem 20%;
+
+        &.light{
+            background: var(--color-white-like);
+            & p {color:var(--color-medium-grey);}
+        }
+
+        &.dark{
+            background: var(--color-dark-blue);
+            & p {color:var(--color-light-grey);}
+        }
+    }
+
+}
+
+
+
+
+/************ FOOTER *************/
+footer {
+    padding: 5rem 20%;
+    background: var(--color-dark-blue);
+    color: var(--color-medium-grey);
+    font-size: 0.8rem;
+}
+
+
+footer logotext {
+    display:block;
+
+    color: var(--color-white-like);
+    font-size: 1.2rem;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+}
+footer logotext .opus { color: var(--color-pink);}
+
+c-footer-left img{height: 3rem;}
+
+
+footer c-footer-right .footer_title{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--color-white-like);
+}
+footer c-footer-right ul{
+    padding: 0;
+    list-style-type:none;
+    font-size: 0.9rem;
+}

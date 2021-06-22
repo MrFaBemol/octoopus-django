@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
+import json
 
+from django.contrib.staticfiles import finders
 from django.http import JsonResponse
 from django.db.models import Count, F
 
 from what.models import Composer
+from Octoopus.shared.octoopus import load_config
 
 
 def search_composers(request):
 
-    all_composers = []
-    results = []
+    data = {}
 
     if request.method == "POST":
-        # Param for the request
-        page = int(request.POST.get('page')) if int(request.POST.get('page')) > 0 else 1
+        all_composers = []
 
+        # Param for the request
+        request_id = int(request.POST.get('request_id')) if request.POST.get('request_id') else 0
+        page = int(request.POST.get('page')) if int(request.POST.get('page')) > 0 else 1
         name = str(request.POST.get('name')) if request.POST.get('name') else ''
 
         if request.POST.get('order_by') and str(request.POST.get('order_by')) == 'default':
@@ -22,35 +26,77 @@ def search_composers(request):
             ordering = 'descending'
         else:
             order_by = str(request.POST.get('order_by')) if request.POST.get('order_by') else 'name'
-            ordering = str(request.POST.get('ordering')) if request.POST.get('ordering') else 'ascending'
+            ordering = 'descending' if request.POST.get('ordering') == 'on' else 'ascending'
 
-        # Request + filters
+        # Null safety for dates
+        dates = {}
+        for date in ['min_birth','max_birth','min_death', 'max_death']:
+            try:
+                dates[date] = int(request.POST.get(date))
+            except:
+                dates[date] = -1
+
+
+        # Request
         all_composers = Composer.objects.annotate(works_quantity=Count('work'))
+
+
+        # ######################### Filters #########################
+        # Name
         all_composers = all_composers.filter(name__contains=name) | all_composers.filter(first_name__contains=name)
 
-        # Ordering
+        # Popular / Essential options
+        if request.POST.get('is_popular') and request.POST.get('is_popular') == 'on':
+            all_composers = all_composers.filter(is_popular=True)
+        if request.POST.get('is_essential') and request.POST.get('is_essential') == 'on':
+            all_composers = all_composers.filter(is_essential=True)
+
+        # Dates
+        if dates['min_birth'] != -1:
+            all_composers = all_composers.filter(birth__year__gte=dates['min_birth'])
+        if dates['max_birth'] != -1:
+            all_composers = all_composers.filter(birth__year__lte=dates['max_birth'])
+        if dates['min_death'] != -1:
+            all_composers = all_composers.filter(death__year__gte=dates['min_death'], death__isnull=False)
+        if dates['max_death'] != -1:
+            all_composers = all_composers.filter(death__year__lte=dates['max_death'], death__isnull=False)
+
+        # ######################### Ordering ########################
         if ordering == 'ascending':
             all_composers = all_composers.order_by(F(order_by).asc(nulls_last=True))
         else:
             all_composers = all_composers.order_by(F(order_by).desc(nulls_last=True))
 
-        # all_composers = all_composers.filter(death__year__lte=1900)
-        # all_composers = all_composers.filter(name__contains="bach")
+        # Patches
+        if order_by == 'death':
+            all_composers = all_composers.filter(death__isnull=False)
 
-        # Pagination + final results
-        page_composers = all_composers[((page-1)*30):(page*30)]
+
+        # Pagination & final results ########################
+        config = load_config('what')
+        res_per_page = int(config['composers']['results_per_page'])
+        page_composers = all_composers[((page-1)*res_per_page):(page*res_per_page)]
+
+        page_results = []
+
         for composer in page_composers:
-            results.append({
+            page_results.append({
                 'id': composer.id,
                 'name': composer.name,
                 'first_name': composer.first_name,
+                'slug': composer.slug,
                 'portrait': composer.portrait,
                 'works_quantity': composer.works_quantity,
             })
 
-    data = {
-        'total_count': len(all_composers),
-        'page_count': len(results),
-        'data': results
-    }
+        data = {
+            'request_id': request_id,
+            'page': page,
+            'total_count': len(all_composers),
+            'page_count': len(page_results),
+            'composers': page_results,
+            'results_per_page': res_per_page
+        }
+
+
     return JsonResponse(data)

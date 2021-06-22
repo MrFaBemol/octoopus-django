@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-
+from django.utils.text import slugify
 
 
 """
@@ -53,8 +53,16 @@ class Composer(models.Model):
     is_popular = models.BooleanField(default=False)
     is_essential = models.BooleanField(default=False)
 
+    slug = models.SlugField(max_length=255, unique=True, null=True)
+    wikipedia_url = models.URLField(max_length=230, default="")
+
     def __str__(self):
         return str(self.name) + ", " + str(self.first_name)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(str(self.name) + " " + str(self.first_name))
+        super(Composer, self).save(*args, **kwargs)
 
 
 """
@@ -83,8 +91,15 @@ class Work(models.Model):
     is_popular = models.BooleanField(default=False)
     is_essential = models.BooleanField(default=False)
 
+    slug = models.SlugField(max_length=255, unique=True, null=True)
+
     def __str__(self):
         return str(self.composer_id.name)[:15] + ": " + str(self.name)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(str(self.name) + "(" + str(self.composer_id.name) + " " + str(self.first_name) + ")")
+        super(Work, self).save(*args, **kwargs)
 
 
 class WorkVersion(models.Model):

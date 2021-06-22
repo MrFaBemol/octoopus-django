@@ -7,35 +7,85 @@
 
 
 {% block main %}
-<div class="columns c15-85">
+<div class="columns max-right">
     <c-filters>
-        <input type="text" name="name" id="name" style="width:100%;">
+        <input type="text" name="name" id="name" placeholder="Search by name...">
+
+        <fieldset>
+            <legend>Options</legend>
+            <label class="switch">
+                <input type="checkbox" id="is_popular">
+                <span>Only popular composers</span>
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="is_essential">
+                <span>Only essential composers</span>
+            </label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Dates</legend>
+            <div class="input-min-max">
+                <label>Birth</label>
+                <input type="text" id="min_birth" placeholder="Min" maxlength="4" size="1">
+                <input type="text" id="max_birth" placeholder="Max" maxlength="4" size="1">
+            </div>
+
+            <div class="input-min-max">
+                <label>Death</label>
+                <input type="text" id="min_death" placeholder="Min" maxlength="4" size="1">
+                <input type="text" id="max_death" placeholder="Max" maxlength="4" size="1">
+            </div>
+
+        </fieldset>
     </c-filters>
+
     <div>
-        <c-top-bar>
-            <c-order-by>
-                <select name="order_by" id="order_by">
+        <c-top-bar class="flex-gap">
+            <c-results>
+                Results: <span class="results_min_page">0</span> - <span class="results_max_page">0</span> / <span class="results_count">0</span>
+            </c-results>
+
+            <c-pagination>
+                <a href="#" class="prev_page"><</a>
+                Page: <span class="current_page">-</span> / <span class="total_page">-</span>
+                <a href="#" class="next_page">></a>
+            </c-pagination>
+
+            <c-order-by class="columns auto-auto gap1 c-vertical c-horizontal" >
+                <select name="order_by" id="order_by" class="dropdown" placeholder="Sort by...">
                     <option value="default" selected>Default (popular first)</option>
                     <option value="name">Name</option>
                     <option value="works_quantity">Works quantity</option>
                     <option value="birth">Birth date</option>
                     <option value="death">Death date</option>
                 </select>
-                <select name="ordering" id="ordering">
-                    <option value="ascending" selected>Ascending</option>
-                    <option value="descending">Descending</option>
-                </select>
+                <label class="switch">
+                    <span>Asc.</span>
+                    <input type="checkbox" id="ordering">
+                    <span>Desc.</span>
+                </label>
             </c-order-by>
-            <c-pagination>
-                (<span class="results_count">0</span> results)
-                <a href="#"  class="prev_page"><</a>
-                Page: <span class="current_page">0</span> / <span class="total_page">0</span>
-                <a href="#" class="next_page">></a>
-            </c-pagination>
+
         </c-top-bar>
 
         <c-composer-grid class="disabled"> </c-composer-grid>
+
+        <c-bottom-bar class="flex-gap">
+            <c-results>
+                Results: <span class="results_min_page">0</span> - <span class="results_max_page">0</span> / <span class="results_count">0</span>
+            </c-results>
+            <c-pagination>
+                <a class="prev_page"><</a>
+                Page: <span class="current_page">-</span> / <span class="total_page">-</span>
+                <a class="next_page">></a>
+            </c-pagination>
+
+            <div style="width: 300px; "> </div>
+
+        </c-bottom-bar>
     </div>
+
 </div>
 {% endblock %}
 
@@ -45,20 +95,20 @@
     {% csrf_token %}
     <script type="text/javascript">
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const result_per_page = 30;
-        let counter = 0;
+        let results_per_page = 0;
+        let request_id = 0;
+
 
         // The function to call api
         function load_composers(page = 1){
-            counter++;
-            console.log(counter);
-            // console.log(page);
             let composer_grid = $('c-composer-grid');
             let prev_page = $('.prev_page');
             let next_page = $('.next_page');
             composer_grid.addClass('disabled');
             prev_page.addClass('disabled');
             next_page.addClass('disabled');
+
+            request_id++;
 
             $.ajax({
                 url: "{% url 'api-composers' %}",
@@ -67,39 +117,73 @@
 
                 dataType: "json",
                 data: {
+                    'request_id': request_id,
                     'page': page,
                     'name': $('#name').val(),
                     'order_by': $('#order_by').val(),
                     'ordering': $('#ordering').val(),
+                    'is_popular': $('#is_popular').val(),
+                    'is_essential': $('#is_essential').val(),
+
+                    'min_birth': $('#min_birth').val(),
+                    'max_birth': $('#max_birth').val(),
+                    'min_death': $('#min_death').val(),
+                    'max_death': $('#max_death').val(),
                 },
 
                 success: function(data){
+                    if (data.request_id > request_id){return;}
+
                     //console.log(data);
-                    let page_max = data.total_count % result_per_page > 0 ?
-                                    (data.total_count/result_per_page + 1).toFixed(0) :
-                                    (data.total_count/result_per_page);
+                    results_per_page = data.results_per_page;
+
+                    let page_max = data.total_count % results_per_page > 0 ?
+                                    Math.floor(data.total_count/results_per_page) + 1 :
+                                    (data.total_count/results_per_page);
 
                     $('.results_count').text(data.total_count);
+                    $('.results_min_page').text(1+(results_per_page * (data.page-1)));
+                    $('.results_max_page').text(
+                        results_per_page * data.page > data.total_count ?
+                        results_per_page * (data.page-1) + data.page_count :
+                        results_per_page * data.page
+                    );
                     $('.current_page').text(page);
                     $('.total_page').text(page_max);
 
+                    if (data.total_count === 0){
+                        $('.current_page').text("0");
+                        $('.results_min_page').text("0");
+
+                    }
+
+
                     prev_page.off('click');
-                    prev_page.click(function(){load_composers(page - 1 > 0 ? page - 1 : 1)});
+                    if (page-1 > 0){prev_page.click(function(){load_composers(page - 1)});}
                     next_page.off('click');
-                    next_page.click(function(){load_composers(page + 1 < page_max ? page + 1 : page_max);});
+                    if (page + 1 <= page_max){next_page.click(function(){load_composers(page + 1);});}
+
 
                     composer_grid.empty();
 
                     for (let i = 0; i < data.page_count ; i++){
+                        let url = "{% url 'what-composer_details' composer_id=999999999 slug='db-slug' %}";
+                        url = url.replace('999999999', data.composers[i].id.toString());
+                        url = url.replace('db-slug', data.composers[i].slug.toString());
                         composer_grid.append(`
-                            <c-composer style="background-image:url('`+ data.data[i].portrait +`');">
+
+                            <c-composer style="background-image:url('`+ data.composers[i].portrait +`');">
+                                <a href="`+ url +`"><c-composer-link> </c-composer-link></a>
                                 <c-composer-infos>
-                                    <div class="name">`+ data.data[i].name +`, `+ data.data[i].first_name +`</div>
-                                    <div class="infos">#`+ data.data[i].id +` - `+ data.data[i].works_quantity +` works</div>
+                                    <div class="name">`+ data.composers[i].name +`, `+ data.composers[i].first_name +`</div>
+                                    <div class="infos">#`+ data.composers[i].id +` - `+ data.composers[i].works_quantity +` works</div>
                                 </c-composer-infos>
                             </c-composer>
+
                         `);
                     }
+
+
 
                }
            });
@@ -109,23 +193,48 @@
             prev_page.removeClass('disabled');
         }
 
-        $(document).ready(function() {
-            load_composers();
+    </script>
+{% endblock %}
 
-            // Trigger a reload each time something is changed
-            const on_changes = ['order_by', 'ordering'];
+
+{% block javascript-end %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            // Trigger a reload each time something in this list is changed
+            const on_changes = ['order_by', 'ordering', 'is_popular', 'is_essential'];
             for (let on_change of on_changes){
-                $('#'+on_change).change(function (){
+                let element = $('#'+on_change);
+                // Small patch to update value when refreshing the page
+                if (element.is(':checked')){
+                    element.val('on');
+                    element.next().addClass('active');
+                    element.prev().removeClass('active');
+                }
+                // We update composers list on change for each element
+                element.change(function (){ load_composers();});
+            }
+
+            const on_keyups = ['min_birth','max_birth','min_death', 'max_death'];
+            for (let on_keyup of on_keyups){
+                $('#'+on_keyup).keyup(function (){
                     load_composers();
                 });
             }
+
+
+            // Trigger a reload only when the value is changed
+            let last_search = $("#name").val();
             $('#name').keyup(function (){
-                load_composers();
+                if (last_search !== $(this).val()){
+                    last_search = $(this).val();
+                    load_composers();
+                }
             });
+
+            // The actual FIRST load of the page
+            load_composers();
+
         });
-
-
-
-
     </script>
 {% endblock %}
