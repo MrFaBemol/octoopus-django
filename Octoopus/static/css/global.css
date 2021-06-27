@@ -36,4 +36,8 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
 }
 
+.row.mb0 {
+  margin-bottom: 0 !important;
+}
+
 /*# sourceMappingURL=global.css.map */

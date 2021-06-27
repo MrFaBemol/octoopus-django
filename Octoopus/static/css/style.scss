@@ -1,10 +1,12 @@
+@import 'components/color-variables';
+
 /*
 
-Pink: FC0254
-Dark blue: 0A193D
-Medium blue: 1C294A
-Light blue: 2b2f72
-Mid-grey: 6a7080
+    Pink: FC0254
+    Dark blue: 0A193D
+    Medium blue: 1C294A
+    Light blue: 2b2f72
+    Mid-grey: 6a7080
 
 */
 
@@ -28,62 +30,41 @@ body {
 }
 
 
-
 /************ HEADER *************/
-header{
-    background: var(--color-dark-blue);
-    color: var(--color-white-like);
-    padding: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+.nav-wrapper{
+    padding: 0 10px;
 
-c-logo{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size:1.6rem;
-    font-family: 'Lato', sans-serif;
-    cursor: pointer;
+    & .brand-logo{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        font-size:1.6rem;
+        font-family: 'Lato', sans-serif;
+        cursor: pointer;
 
-    & a {
-        color: var(--color-white-like);
-        text-decoration:none;
-        transition: all .3s ease;
+        color: #FFF;
+        & .opus{color: color('pink', 'accent-3');}
+
+        & img {
+            height: 3rem;
+            padding-right: 5px;
+        }
     }
 
-    & img {height: 3rem;}
-    & .opus{color:var(--color-pink);transition: all .3s ease;}
+    li{
+        font-family: 'Montserrat', sans-serif;
+        padding: 0 0.5rem;
+        & a{
+            text-decoration:none;
+            transition: all .3s ease;
+            &:is(a:hover, a.highlight){
+                color: color('pink', 'accent-3');
+            }
+        }
 
-    &:hover a {color:var(--color-pink);}
-    &:hover .opus {color:var(--color-white-like);}
-}
-
-
-/* NAVIGATION */
-header c-navigation{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header c-navigation li {
-    display:inline;
-    list-style-type:none;
-    margin-right: 3rem;
-    font-family: 'Montserrat', sans-serif;
-}
-header c-navigation li a {
-    color: var(--color-white-like);
-    text-decoration:none;
-    transition: all .3s ease;
-
-    &:is(a:hover, a.highlight){
-        color:var(--color-pink)
     }
 }
+
 
 
 

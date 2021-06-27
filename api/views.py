@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-import json
 
-from django.contrib.staticfiles import finders
 from django.http import JsonResponse
-from django.db.models import Count, F
+from django.db.models import Count, F, Case, When, Value, IntegerField
 
-from what.models import Composer
-from Octoopus.shared.octoopus import load_config
+from what.models import Composer, Instrument
+from api.shared.tools import get_instrument_parent_category
+from Octoopus.shared.tools import load_config
 
 
 def search_composers(request):
@@ -98,5 +97,64 @@ def search_composers(request):
             'results_per_page': res_per_page
         }
 
+
+    return JsonResponse(data)
+
+
+def search_instruments(request):
+
+    data = {}
+
+    if request.method == "POST":
+        # Param for the request
+        request_id = int(request.POST.get('request_id')) if request.POST.get('request_id') else 0
+        search = str(request.POST.get('search')) if request.POST.get('search') else ''
+
+
+        all_instruments = Instrument.objects.all()
+        search_terms = [term for term in search.split(' ') if term != ""]
+
+        # Todo: ajouter un exact_results
+
+        best_results = all_instruments.filter(name__contains=search_terms[0])
+        for i in range(1, len(search_terms)):
+            best_results = best_results & all_instruments.filter(name__contains=search_terms[i])
+
+        print(best_results)
+
+        all_results = best_results
+
+        # all_results = (
+        #     Instrument.objects
+        #     .filter(best_results | all_instruments)
+        #     .annotate(
+        #         search_ordering=Case(
+        #             When(best_results, then=Value(2)),
+        #             When(all_instruments, then=Value(1)),
+        #             default=Value(-1),
+        #             output_field=IntegerField(),
+        #         )
+        #     ).order_by('-search_ordering', ...)
+        # )
+
+        print(all_results)
+
+        # ORDER & LIMIT
+        all_results = all_results[:5]
+
+        propositions = []
+        for instrument in all_results:
+            propositions.append({
+                'id': instrument.id,
+                'name': instrument.name,
+                'full_path': get_instrument_parent_category(instrument.id),
+            })
+
+        data = {
+            'request_id': request_id,
+            'search_terms': search_terms,
+            'total_count': len(propositions),
+            'propositions': propositions,
+        }
 
     return JsonResponse(data)

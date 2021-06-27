@@ -8,4 +8,65 @@
 
 {% block main %}
     <h1>WHAT SEARCH</h1>
+    <input type="text" id="search" autocomplete="off" />
+    <div id="propositions"></div>
+{% endblock %}
+
+{% block javascript-end %}
+    {% csrf_token %}
+    <script type="text/javascript">
+
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let request_id = 0;
+
+        function load_propositions() {
+
+            let search = $('#search').val();
+            if (search.length < 2){
+                $('#propositions').empty();
+                return;
+            }
+
+            request_id++;
+
+            $.ajax({
+                url: "{% url 'api-instruments' %}",
+                headers: {'X-CSRFToken': csrftoken},
+                type: "POST",
+                dataType: "json",
+                data: {
+                    'request_id': request_id,
+                    'search': search,
+                },
+
+                success: function (data) {
+                    if (data.request_id > request_id) {return;}
+                    console.log(data);
+                    let propositions = $('#propositions');
+                    propositions.empty();
+
+                    for (let i = 0; i < data.total_count ; i++){
+                        let full_path = data.propositions[i].full_path;
+                        let name = data.propositions[i].name;
+                        for (let j = 0; j < data.search_terms.length ; j++){
+                            console.log(data.search_terms[j]);
+
+                            name = data.search_terms[j].length < 2 ? name : name.replace(new RegExp(data.search_terms[j], "ig"), '<b>$&</b>');
+                            // name = name.replace(data.search_terms[j], `<b>${data.search_terms[j]}</b>`);
+                        }
+                        let html_output = `<p>${full_path}${name}</p>`;
+                        propositions.append(html_output.replace());
+                    }
+                }
+            });
+        }
+
+
+        $(document).ready(function() {
+            $('#search').keyup(function (){
+                load_propositions();
+            });
+        });
+
+    </script>
 {% endblock %}

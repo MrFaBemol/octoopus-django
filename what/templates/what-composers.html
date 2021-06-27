@@ -7,40 +7,68 @@
 
 
 {% block main %}
-<div class="columns max-right">
-    <c-filters>
-        <input type="text" name="name" id="name" placeholder="Search by name...">
+<div class="row">
+    <div class="col s2">
+        <div class="input-field">
+            <i class="material-icons prefix">search</i>
+            <input type="text" name="name" id="name" class="validate" />
+            <label for="name">Name</label>
+        </div>
+
 
         <fieldset>
-            <legend>Options</legend>
-            <label class="switch">
-                <input type="checkbox" id="is_popular">
-                <span>Only popular composers</span>
-            </label>
-            <label class="switch">
-                <input type="checkbox" id="is_essential">
-                <span>Only essential composers</span>
-            </label>
+            <legend>Big filters</legend>
+            <div class="switch">
+                <label>
+                    <input type="checkbox" id="is_popular">
+                    <span class="lever"></span>
+                    Only popular composers
+                </label>
+            </div>
+            <div class="switch">
+                <label>
+                    <input type="checkbox" id="is_essential">
+                    <span class="lever"></span>
+                    Only essential composers
+                </label>
+            </div>
         </fieldset>
 
         <fieldset>
             <legend>Dates</legend>
-            <div class="input-min-max">
-                <label>Birth</label>
-                <input type="text" id="min_birth" placeholder="Min" maxlength="4" size="1">
-                <input type="text" id="max_birth" placeholder="Max" maxlength="4" size="1">
-            </div>
+                <div class="label-input-double">
+                    <span>
+                        <i class="material-icons prefix">child_care</i>
+                        <label>Birth</label>
+                    </span>
+                    <div class="input-field inline small">
+                        <input id="min_birth" type="text" class="validate" maxlength="4" size="1">
+                        <label for="min_birth">Min</label>
+                    </div>
+                    <div class="input-field inline small">
+                        <input id="max_birth" type="text" class="validate" maxlength="4" size="1">
+                        <label for="max_birth">Max</label>
+                    </div>
+                </div>
 
-            <div class="input-min-max">
-                <label>Death</label>
-                <input type="text" id="min_death" placeholder="Min" maxlength="4" size="1">
-                <input type="text" id="max_death" placeholder="Max" maxlength="4" size="1">
-            </div>
-
+                <div class="label-input-double">
+                    <span>
+                        <i class="material-icons prefix">elderly</i>
+                        <label>Death</label>
+                    </span>
+                    <div class="input-field inline small">
+                        <input id="min_death" type="text" class="validate" maxlength="4" size="1">
+                        <label for="min_death">Min</label>
+                    </div>
+                    <div class="input-field inline small">
+                        <input id="max_death" type="text" class="validate" maxlength="4" size="1">
+                        <label for="max_death">Max</label>
+                    </div>
+                </div>
         </fieldset>
-    </c-filters>
+    </div>
 
-    <div>
+    <div class="col s10">
         <c-top-bar class="flex-gap">
             <c-results>
                 Results: <span class="results_min_page">0</span> - <span class="results_max_page">0</span> / <span class="results_count">0</span>
@@ -52,19 +80,28 @@
                 <a href="#" class="next_page">></a>
             </c-pagination>
 
-            <c-order-by class="columns auto-auto gap1 c-vertical c-horizontal" >
-                <select name="order_by" id="order_by" class="dropdown" placeholder="Sort by...">
-                    <option value="default" selected>Default (popular first)</option>
-                    <option value="name">Name</option>
-                    <option value="works_quantity">Works quantity</option>
-                    <option value="birth">Birth date</option>
-                    <option value="death">Death date</option>
-                </select>
-                <label class="switch">
-                    <span>Asc.</span>
-                    <input type="checkbox" id="ordering">
-                    <span>Desc.</span>
-                </label>
+            <c-order-by class="columns auto-auto gap1 c-vertical c-horizontal">
+
+
+                <div class="input-field col s12">
+                    <select name="order_by" id="order_by" placeholder="Sort by...">
+                        <option value="default" selected>Default (popular first)</option>
+                        <option value="name">Name</option>
+                        <option value="works_quantity">Works quantity</option>
+                        <option value="birth">Birth date</option>
+                        <option value="death">Death date</option>
+                    </select>
+                    <label>Order By</label>
+                </div>
+
+                <div class="switch">
+                    <label>
+                        Asc.
+                        <input type="checkbox" id="ordering" />
+                        <span class="lever"></span>
+                        Desc.
+                    </label>
+                </div>
             </c-order-by>
 
         </c-top-bar>
@@ -81,7 +118,7 @@
                 <a class="next_page">></a>
             </c-pagination>
 
-            <div style="width: 300px; "> </div>
+            <div style="width: 300px;"> </div>
 
         </c-bottom-bar>
     </div>
@@ -182,9 +219,6 @@
 
                         `);
                     }
-
-
-
                }
            });
 
@@ -205,14 +239,20 @@
             const on_changes = ['order_by', 'ordering', 'is_popular', 'is_essential'];
             for (let on_change of on_changes){
                 let element = $('#'+on_change);
+
                 // Small patch to update value when refreshing the page
-                if (element.is(':checked')){
-                    element.val('on');
-                    element.next().addClass('active');
-                    element.prev().removeClass('active');
+                if (element.attr('type') === 'checkbox'){
+                    element.val(element.is(':checked') ? 'on' : 'off');
                 }
+
                 // We update composers list on change for each element
-                element.change(function (){ load_composers();});
+                element.change(function (){
+                    let el = $('#'+on_change);
+                    if (el.attr('type') === 'checkbox'){
+                        el.val(el.is(':checked') ? 'on' : 'off');
+                    }
+                    load_composers();
+                });
             }
 
             const on_keyups = ['min_birth','max_birth','min_death', 'max_death'];
@@ -234,7 +274,7 @@
 
             // The actual FIRST load of the page
             load_composers();
-
+            $('select').formSelect();
         });
     </script>
 {% endblock %}

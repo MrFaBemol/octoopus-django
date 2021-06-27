@@ -6,11 +6,15 @@
         <link rel="icon" href="{% static 'images/favicon.ico' %}"/>
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat&family=Open+Sans&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/global.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/layouts.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/materialize.css' %}" media="screen,projection" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" media="screen,projection" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}" media="screen,projection" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/layouts.css' %}" media="screen,projection" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}" media="screen,projection" />
         {% block css %}{% endblock %}
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         {% block javascript %}{% endblock %}
@@ -20,20 +24,28 @@
     </head>
     <body>
         <header>
-            <c-logo>
-                 <img src="{% static 'images/pieuvre.png' %}" alt="Octoo" />
-                 <a href="{% url 'index' %}">
-                    OCTO<span class="opus">OPUS</span>
-                </a>
-            </c-logo>
-            <c-navigation>
-                <ul>
-                    <li><a href="{% url 'what-composers' %}">Browse composers</a></li>
-                    <li><a href="{% url 'what-search' %}">Search works</a></li>
-                    <li>|</li>
-                    <li><a href="#" class="highlight">Sign in</a></li>
-                </ul>
-            </c-navigation>
+            <nav>
+              <div class="nav-wrapper blue darken-5">
+                  <a href="{% url 'index' %}" class="brand-logo">
+                      <img src="{% static 'images/pieuvre.png' %}" alt="Octoo" />
+                      OCTO<span class="opus">OPUS</span>
+                  </a>
+                  <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                  <ul class="right hide-on-med-and-down">
+                      <li><a href="{% url 'what-composers' %}">Browse composers</a></li>
+                      <li><a href="{% url 'what-search' %}">Search works</a></li>
+                      <li>|</li>
+                      <li><a href="#" class="highlight">Sign in</a></li>
+                  </ul>
+              </div>
+            </nav>
+
+            <ul class="sidenav" id="nav-mobile">
+              <li><a href="{% url 'what-composers' %}">Browse composers</a></li>
+              <li><a href="{% url 'what-search' %}">Search works</a></li>
+              <li>|</li>
+              <li><a href="#" class="highlight">Sign in</a></li>
+            </ul>
         </header>
 
         <!--
@@ -75,6 +87,12 @@
 
         </footer>
         <script src="{% static 'js/forms.js' %}"></script>
+        <script src="{% static 'js/materialize.min.js' %}"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.sidenav').sidenav();
+            });
+        </script>
         {% block javascript-end %}{% endblock %}
     </body>
 </html>
