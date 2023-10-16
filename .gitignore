@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+venv/
+
 # C extensions
 *.so
 
@@ -130,4 +132,4 @@ dmypy.json
 
 # Custom
 .idea/
-README.md
+*/__pycache__/

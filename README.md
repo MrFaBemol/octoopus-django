@@ -1,3 +1,3 @@
-# Octoopus
+## Octoopus origin :octopus:
 
-It's good to have eight arms
+Original version of Octoopus Alpha in Django (before Odoo refactoring)
